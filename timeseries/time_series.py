@@ -136,7 +136,7 @@ class TimeSeriesGroup(MutableMapping):
         return TimeSeriesGroup({ name: series.forecast(horizon, **kwargs) \
             for name, series in self.groups.iteritems() })
 
-    def plot(self, overlay=True): # pragma: no cover
+    def plot(self, overlay=True, **labels): # pragma: no cover
         '''Plot all time series in the group.'''
         pylab = LazyImport.pylab()
         colours = list('rgbymc')
@@ -148,6 +148,8 @@ class TimeSeriesGroup(MutableMapping):
             colours_pos += 1
             if not overlay:
                 pylab.subplot(plots, 1, colours_pos)
+            if name in labels:
+                name = labels[name]
             pylab.plot(series.dates, series.y, '%s-' % colour, label=name)
             pylab.legend()
         pylab.show()
