@@ -81,6 +81,9 @@ class Series(object):
         self.points = [ ( x, y - lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
+    def __getitem__(self, items):
+        return self.points.__getitem__(items)
+
     def __iter__(self):
         return iter(self.points)
 

@@ -41,6 +41,11 @@ class TestSeries(TestCase):
         self.assertListEqual(trend.x, [1, 2, 3, 4])
         self.assertListEqual(trend.y, [37, 38, 56, 94])
 
+    def test_indexing_and_slicing(self):
+        series = Series([ (1, 3), (2, 3), (3, 3) ])
+        self.assertTupleEqual(series[0], (1, 3))
+        self.assertListEqual(series[0:2], [ (1, 3), (2, 3) ])
+
     def test_add(self):
         a = Series([ (1, 3), (2, 3), (3, 3) ])
         b = Series([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
