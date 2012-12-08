@@ -152,6 +152,13 @@ class TimeSeriesGroup(MutableMapping):
             pylab.legend()
         pylab.show()
 
+    def rename(self, **kwargs):
+        '''Rename series in the group.'''
+        for old, new in kwargs.iteritems():
+            if old in self.groups:
+                self.groups[new] = self.groups[old]
+                del self.groups[old]
+
     def __getitem__(self, key):
         return self.groups[key]
 

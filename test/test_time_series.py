@@ -113,7 +113,7 @@ class TestTimeSeries(TestCase):
         self.assertListEqual(decomposed['seasonal'].values, [-50, 50, -50, 50, -50])
         self.assertListEqual(decomposed['residual'].values, [0] * 5)
 
-    def test_accessors(self):
+    def test_group_accessors(self):
         foo = TimeSeries({ 1: 2, 3: 4 })
         bar = TimeSeries({ 5: 6, 7: 8 })
         group = TimeSeriesGroup(foo=foo, bar=bar)
@@ -126,6 +126,14 @@ class TestTimeSeries(TestCase):
         self.assertEquals(len(group), 2)
         self.assertIs(foo, group['foo'])
         self.assertListEqual(group.items(), [ ('foo', foo), ('bar', bar) ])
+
+    def test_group_rename(self):
+        foo = TimeSeries({ 1: 2, 3: 4 })
+        bar = TimeSeries({ 5: 6, 7: 8 })
+        group = TimeSeriesGroup(foo=foo, bar=bar)
+        group.rename(foo='Foo Bar')
+        self.assertFalse('foo' in group)
+        self.assertTrue('Foo Bar' in group)
 
     def test_linear_trend(self):
         foo = TimeSeries([ (1, 32), (2, 55), (3, 40) ])
