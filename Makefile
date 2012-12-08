@@ -2,7 +2,7 @@ check:
 	@python test.py
 
 clean:
-	@rm -rf timeseries/*.pyc test/*.pyc build dist \
+	@rm -rf timeseries/*.pyc test/*.pyc *.pyc build dist \
 			timeseries.egg-info .coverage htmlcov
 
 coverage:
