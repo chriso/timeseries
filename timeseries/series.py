@@ -62,7 +62,6 @@ class Series(object):
             raise ArithmeticError('Cannot calculate the trend of an empty series')
         return LazyImport.numpy().polyfit(self.x, self.y, order)
 
-
     def __add__(self, operand):
         lookup = dict(operand.points)
         return Series([ ( x, y + lookup[x] ) for x, y in self.points if x in lookup ])

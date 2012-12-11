@@ -108,6 +108,20 @@ class TimeSeries(Series):
             pylab.legend()
         pylab.show()
 
+    def __add__(self, operand):
+        series = Series.__add__(self, operand)
+        frequency = None
+        if operand.frequency == self.frequency:
+            frequency = self.frequency
+        return TimeSeries(series.points, frequency=frequency)
+
+    def __sub__(self, operand):
+        series = Series.__sub__(self, operand)
+        frequency = None
+        if operand.frequency == self.frequency:
+            frequency = self.frequency
+        return TimeSeries(series.points, frequency=frequency)
+
     def _to_datetime(self, time):
         '''Convert `time` to a datetime.'''
         if type(time) == IntType or type(time) == LongType:

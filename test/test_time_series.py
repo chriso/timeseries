@@ -145,3 +145,37 @@ class TestTimeSeries(TestCase):
         self.assertListEqual(trend['bar'].x, [4, 5, 6])
         self.assertListEqual(trend['bar'].y, [48, 52, 56])
 
+    def test_add(self):
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        c = a + b
+        self.assertListEqual(c.points, [ (1, 4), (2, 4), (3, 4) ])
+        self.assertEquals(c.frequency, 2)
+
+    def test_add_update(self):
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        a += b
+        self.assertListEqual(a.points, [ (1, 4), (2, 4), (3, 4) ])
+        self.assertEquals(a.frequency, 2)
+
+    def test_sub(self):
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        c = a - b
+        self.assertListEqual(c.points, [ (1, 2), (2, 2), (3, 2) ])
+        self.assertEquals(c.frequency, 2)
+
+    def test_sub_update(self):
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        a -= b
+        self.assertListEqual(a.points, [ (1, 2), (2, 2), (3, 2) ])
+        self.assertEquals(a.frequency, 2)
+
+    def test_operators_erase_frequency_on_mismatch(self):
+        a = TimeSeries([ ], frequency=2)
+        b = TimeSeries([ ], frequency=1)
+        c = a - b
+        self.assertEquals(c.frequency, None)
+
