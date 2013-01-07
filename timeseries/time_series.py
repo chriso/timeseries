@@ -189,6 +189,9 @@ class TimeSeriesGroup(MutableMapping):
     def __setitem__(self, key, value):
         self.groups[key] = value
 
+    def __getattr__(self, key):
+        return self.groups[key]
+
     def __delitem__(self, key):
         del self.groups[key]
 

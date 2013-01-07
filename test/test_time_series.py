@@ -122,6 +122,8 @@ class TestTimeSeries(TestCase):
         group = TimeSeriesGroup(foo=foo, bar=bar)
         self.assertIs(foo, group['foo'])
         self.assertIs(bar, group['bar'])
+        self.assertIs(foo, group.foo)
+        self.assertIs(bar, group.bar)
         self.assertEquals(len(group), 2)
         del group['foo']
         self.assertEquals(len(group), 1)
