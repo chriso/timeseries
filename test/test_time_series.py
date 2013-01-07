@@ -31,6 +31,12 @@ class TestTimeSeries(TestCase):
         self.assertListEqual(series.timestamps, [1234000, 5678000])
         self.assertListEqual(series.values, [54, 100])
 
+    def test_initial_sort(self):
+        points = [ (3, 54), (2, 100), (4, 32) ]
+        series = TimeSeries(points)
+        self.assertListEqual(series.timestamps, [2, 3, 4])
+        self.assertListEqual(series.values, [100, 54, 32])
+
     def test_interval(self):
         series = TimeSeries([])
         self.assertEquals(series.interval, None)

@@ -19,7 +19,7 @@ class Series(object):
         represent the x points and values represent the y points.'''
         if type(points) == DictType:
             points = points.items()
-        self.points = points
+        self.points = sorted(points)
 
     @property
     def x(self):
