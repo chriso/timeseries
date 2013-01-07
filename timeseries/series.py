@@ -1,5 +1,6 @@
 from types import DictType, FloatType
 from .lazy_import import LazyImport
+from .utilities import table_output
 
 class Series(object):
     '''An abstract class that represents a series of x & y points.'''
@@ -97,6 +98,9 @@ class Series(object):
 
     def __len__(self):
         return len(self.points)
+
+    def __str__(self):
+        return table_output([ ('X', self.x), ('Y', self.y) ])
 
     def __repr__(self):
         return 'Series(%s)' % repr(self.points)

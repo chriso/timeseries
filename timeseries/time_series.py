@@ -1,8 +1,7 @@
 from collections import MutableMapping
-from types import IntType, LongType
-from datetime import datetime
 from .lazy_import import LazyImport
 from .series import Series
+from .utilities import table_output, to_datetime
 
 class TimeSeries(Series):
     '''A representation of a time series with a fixed interval.'''
@@ -25,7 +24,7 @@ class TimeSeries(Series):
     @property
     def dates(self):
         '''Get all dates from the time series as `datetime` instances.'''
-        return map(self._to_datetime, self.x)
+        return map(to_datetime, self.x)
 
     @property
     def values(self):
@@ -102,11 +101,11 @@ class TimeSeries(Series):
     def __sub__(self, operand):
         return TimeSeries(Series.__sub__(self, operand))
 
-    def _to_datetime(self, time):
-        '''Convert `time` to a datetime.'''
-        if type(time) == IntType or type(time) == LongType:
-            time = datetime.fromtimestamp(time // 1000)
-        return time
+    def __str__(self):
+        data = {}
+        data['Date'] = map(lambda date: date.isoformat(' '), self.dates)
+        data['Value'] = self.values
+        return table_output(data)
 
     def __repr__(self):
         return 'TimeSeries(%s)' % repr(self.points)
@@ -117,6 +116,14 @@ class TimeSeriesGroup(MutableMapping):
     def __init__(self, *args, **kwargs):
         self.groups = {}
         self.update(dict(*args, **kwargs))
+
+    @property
+    def timestamps(self):
+        '''Get all timestamps from all series in the group.'''
+        timestamps = set()
+        for series in self.groups.itervalues():
+            timestamps |= set(series.timestamps)
+        return sorted(list(timestamps))
 
     def trend(self, **kwargs):
         '''Calculate a trend for all series in the group. See the
@@ -186,6 +193,22 @@ class TimeSeriesGroup(MutableMapping):
 
     def __len__(self):
         return len(self.groups)
+
+    def __str__(self):
+        data = []
+        timestamps = self.timestamps
+        dates = map(lambda date: to_datetime(date).isoformat(' '), timestamps)
+        data = [ ( 'Date', dates ) ]
+        for key, series in self.groups.iteritems():
+            row = []
+            series = dict(series.points)
+            for timestamp in timestamps:
+                if timestamp in series:
+                    row.append(series[timestamp])
+                else:
+                    row.append('')
+            data.append(( key, row ))
+        return table_output(data)
 
     def __repr__(self):
         return 'TimeSeriesGroup(%s)' % repr(self.groups)
