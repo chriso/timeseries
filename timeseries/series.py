@@ -1,4 +1,4 @@
-from types import DictType
+from types import DictType, FloatType
 from .lazy_import import LazyImport
 
 class Series(object):
@@ -35,19 +35,15 @@ class Series(object):
         '''Run a map function across all y points in the series.'''
         self.points = [ (x, fn(y)) for x, y in self.points ]
 
-    def trend(self, order=LINEAR, positive=True, rounded=True):
+    def trend(self, order=LINEAR, positive=True):
         '''Calculate a trend of the specified order and return as
         a new series.'''
         coefficients = self.trend_coefficients(order)
         x = self.x
         trend_y = LazyImport.numpy().polyval(coefficients, x)
-        if positive:
-            trend_y = map(lambda y: max(y, 0), trend_y)
-        if rounded:
-            trend_y = map(int, trend_y)
         return Series(zip(x, trend_y))
 
-    def moving_average(self, window, method=SIMPLE, rounded=True):
+    def moving_average(self, window, method=SIMPLE):
         '''Calculate a moving average using the specified method and window'''
         if len(self.points) < window:
             raise ArithmeticError('Not enough points for moving average')
@@ -56,8 +52,6 @@ class Series(object):
             weights = numpy.ones(window) / float(window)
         ma_x = self.x[window-1:]
         ma_y = numpy.convolve(self.y, weights)[window-1:-(window-1)].tolist()
-        if rounded:
-            ma_y = map(lambda y: int(round(y)), ma_y)
         return Series(zip(ma_x, ma_y))
 
     def trend_coefficients(self, order=LINEAR):
@@ -65,6 +59,17 @@ class Series(object):
         if not len(self.points):
             raise ArithmeticError('Cannot calculate the trend of an empty series')
         return LazyImport.numpy().polyfit(self.x, self.y, order)
+
+    def __abs__(self):
+        self.points = [ (x, abs(y)) for x, y in self.points ]
+
+    def __round__(self, n):
+        self.points = [ (x, round(y, n)) for x, y in self.points ]
+
+    def round(self):
+        # Manual delegation for v2.x
+        self.__round__(0)
+        return self
 
     def __add__(self, operand):
         lookup = dict(operand.points)

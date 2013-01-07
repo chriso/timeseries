@@ -22,7 +22,7 @@ class TestSeries(TestCase):
 
     def test_map(self):
         series = Series([ (1, 2), (3, 4), (5, 6) ])
-        series.map(lambda x: x * 2)
+        series.map(lambda y: y * 2)
         self.assertListEqual([ (1, 4), (3, 8), (5, 12) ], series.points)
 
     def test_trend_of_empty_series(self):
@@ -36,15 +36,15 @@ class TestSeries(TestCase):
 
     def test_linear_trend(self):
         series = Series([ (1, 32), (2, 55), (3, 40) ])
-        trend = series.trend(order=Series.LINEAR)
+        trend = series.trend(order=Series.LINEAR).round()
         self.assertListEqual(trend.x, [1, 2, 3])
         self.assertListEqual(trend.y, [38, 42, 46])
 
     def test_quadratic_trend(self):
         series = Series([ (1, 32), (2, 55), (3, 40), (4, 100) ])
-        trend = series.trend(order=Series.QUADRATIC)
+        trend = series.trend(order=Series.QUADRATIC).round()
         self.assertListEqual(trend.x, [1, 2, 3, 4])
-        self.assertListEqual(trend.y, [37, 38, 56, 94])
+        self.assertListEqual(trend.y, [38, 38, 57, 94])
 
     def test_indexing_and_slicing(self):
         series = Series([ (1, 3), (2, 3), (3, 3) ])
@@ -78,9 +78,9 @@ class TestSeries(TestCase):
     def test_simple_moving_average(self):
         points = [1, 2, 3, 4, 5, 6]
         series = Series(zip(points, points))
-        ma = series.moving_average(3)
+        ma = series.moving_average(3).round()
         self.assertListEqual(ma.points, [ (3, 2), (4, 3), (5, 4), (6, 5) ])
-        ma = series.moving_average(5)
+        ma = series.moving_average(5).round()
         self.assertListEqual(ma.points, [ (5, 3), (6, 4) ])
 
     def test_invalid_moving_average(self):

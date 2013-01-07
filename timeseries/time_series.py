@@ -45,7 +45,7 @@ class TimeSeries(Series):
         series = Series.trend(self, **kwargs)
         return TimeSeries(series.points)
 
-    def forecast(self, horizon, method=ARIMA, positive=True, rounded=True):
+    def forecast(self, horizon, method=ARIMA):
         '''Forecast points beyond the time series range using the specified
         forecasting method. `horizon` is the number of points to forecast.'''
         if len(self.points) <= 1:
@@ -62,16 +62,12 @@ class TimeSeries(Series):
             raise ValueError('Unknown forecast() method')
         forecasted = R.forecast.forecast(fit, h=horizon)
         forecast_y = list(forecasted.rx2('mean'))
-        if positive:
-            forecast_y = map(lambda y: max(y, 0), forecast_y)
-        if rounded:
-            forecast_y = map(int, forecast_y)
         interval = self.interval
         last_x = self.points[-1][0]
         forecast_x = [ last_x + x * interval for x in xrange(1, horizon+1) ]
         return TimeSeries(zip(forecast_x, forecast_y))
 
-    def decompose(self, window=None, periodic=False, rounded=True):
+    def decompose(self, window=None, periodic=False):
         '''Use STL to decompose the time series into seasonal, trend, and
         residual components.'''
         if not self.frequency:
@@ -91,10 +87,6 @@ class TimeSeries(Series):
         seasonal = decomposed[0:length]
         trend = decomposed[length:2*length]
         residual = decomposed[2*length:3*length]
-        if rounded:
-            seasonal = map(lambda y: int(round(y)), seasonal)
-            trend = map(lambda y: int(round(y)), trend)
-            residual = map(lambda y: int(round(y)), residual)
         seasonal = TimeSeries(zip(timestamps, seasonal))
         trend = TimeSeries(zip(timestamps, trend))
         residual = TimeSeries(zip(timestamps, residual))
@@ -178,6 +170,19 @@ class TimeSeriesGroup(MutableMapping):
             if old in self.groups:
                 self.groups[new] = self.groups[old]
                 del self.groups[old]
+
+    def round(self):
+        # Manual delegation for v2.x
+        self.__round__(0)
+        return self
+
+    def __abs__(self):
+        for series in self.groups.itervalues():
+            abs(series)
+
+    def __round__(self, n):
+        for series in self.groups.itervalues():
+            series.round()
 
     def __getitem__(self, key):
         return self.groups[key]

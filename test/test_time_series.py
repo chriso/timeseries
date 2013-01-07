@@ -99,7 +99,7 @@ class TestTimeSeries(TestCase):
 
     def test_decomposition(self):
         series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ], frequency=2)
-        decomposed = series.decompose()
+        decomposed = series.decompose().round()
         self.assertTrue(isinstance(decomposed, TimeSeriesGroup))
         self.assertEquals(len(decomposed), 3)
         for series in decomposed.itervalues():
@@ -110,7 +110,7 @@ class TestTimeSeries(TestCase):
 
     def test_periodic_decomposition(self):
         series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ], frequency=2)
-        decomposed = series.decompose(periodic=True)
+        decomposed = series.decompose(periodic=True).round()
         self.assertTrue(isinstance(decomposed, TimeSeriesGroup))
         self.assertEquals(len(decomposed), 3)
         for series in decomposed.itervalues():
@@ -145,7 +145,7 @@ class TestTimeSeries(TestCase):
         foo = TimeSeries([ (1, 32), (2, 55), (3, 40) ])
         bar = TimeSeries([ (4, 42), (5, 65), (6, 50) ])
         group = TimeSeriesGroup(foo=foo, bar=bar)
-        trend = group.trend()
+        trend = group.trend().round()
         self.assertListEqual(trend['foo'].x, [1, 2, 3])
         self.assertListEqual(trend['foo'].y, [38, 42, 46])
         self.assertListEqual(trend['bar'].x, [4, 5, 6])
