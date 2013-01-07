@@ -162,10 +162,14 @@ class TimeSeriesGroup(MutableMapping):
             colours_pos += 1
             if not overlay:
                 pylab.subplot(plots, 1, colours_pos)
+            kwargs = {}
             if name in labels:
                 name = labels[name]
-            pylab.plot(series.dates, series.y, '%s-' % colour, label=name)
-            pylab.legend()
+            if name is not None:
+                kwargs['label'] = name
+            pylab.plot(series.dates, series.y, '%s-' % colour, **kwargs)
+            if name is not None:
+                pylab.legend()
         pylab.show()
 
     def rename(self, **kwargs):
