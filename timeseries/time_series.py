@@ -46,7 +46,7 @@ class TimeSeries(Series):
         return TimeSeries(series.points)
 
     def forecast(self, horizon, method=ARIMA, positive=True, rounded=True):
-        '''Forecast points beyond the time series range using the specifie
+        '''Forecast points beyond the time series range using the specified
         forecasting method. `horizon` is the number of points to forecast.'''
         if len(self.points) <= 1:
             raise ArithmeticError('Cannot run forecast when len(series) <= 1')

@@ -31,6 +31,10 @@ class Series(object):
         '''Get all y points from the series.'''
         return [ point[1] for point in self.points ]
 
+    def map(self, fn):
+        '''Run a map function across all y points in the series.'''
+        self.points = [ (x, fn(y)) for x, y in self.points ]
+
     def trend(self, order=LINEAR, positive=True, rounded=True):
         '''Calculate a trend of the specified order and return as
         a new series.'''
