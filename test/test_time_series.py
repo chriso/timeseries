@@ -4,10 +4,6 @@ from datetime import datetime
 
 class TestTimeSeries(TestCase):
 
-    def test_frequency(self):
-        series = TimeSeries([], frequency=3)
-        self.assertEquals(series.frequency, 3)
-
     def test_tuple_list_init(self):
         series = TimeSeries([ (1, 2), (3, 4), (5, 6) ])
         self.assertListEqual(series.x, [1, 3, 5])
@@ -72,8 +68,8 @@ class TestTimeSeries(TestCase):
         #self.assertListEqual(forecast.values, [])
 
     def test_arima_forecast_with_frequency(self):
-        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ], frequency=4)
-        forecast = series.forecast(3, method=TimeSeries.ARIMA)
+        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ])
+        forecast = series.forecast(3, method=TimeSeries.ARIMA, frequency=4)
         self.assertTrue(isinstance(forecast, TimeSeries))
         self.assertListEqual(forecast.timestamps, [6, 7, 8])
         #self.assertListEqual(forecast.values, [])
@@ -86,20 +82,15 @@ class TestTimeSeries(TestCase):
         #self.assertListEqual(forecast.values, [])
 
     def test_ets_forecast_with_frequency(self):
-        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ], frequency=4)
-        forecast = series.forecast(3, method=TimeSeries.ETS)
+        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ])
+        forecast = series.forecast(3, method=TimeSeries.ETS, frequency=4)
         self.assertTrue(isinstance(forecast, TimeSeries))
         self.assertListEqual(forecast.timestamps, [6, 7, 8])
         #self.assertListEqual(forecast.values, [])
 
-    def test_decomposition_with_no_frequency(self):
-        series = TimeSeries([ (1, 2), (3, 4) ])
-        with self.assertRaises(ValueError):
-            series.decompose()
-
     def test_decomposition(self):
-        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ], frequency=2)
-        decomposed = series.decompose().round()
+        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ])
+        decomposed = series.decompose(2).round()
         self.assertTrue(isinstance(decomposed, TimeSeriesGroup))
         self.assertEquals(len(decomposed), 3)
         for series in decomposed.itervalues():
@@ -109,8 +100,8 @@ class TestTimeSeries(TestCase):
         self.assertListEqual(decomposed['residual'].values, [0] * 5)
 
     def test_periodic_decomposition(self):
-        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ], frequency=2)
-        decomposed = series.decompose(periodic=True).round()
+        series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ])
+        decomposed = series.decompose(2, periodic=True).round()
         self.assertTrue(isinstance(decomposed, TimeSeriesGroup))
         self.assertEquals(len(decomposed), 3)
         for series in decomposed.itervalues():
@@ -152,36 +143,26 @@ class TestTimeSeries(TestCase):
         self.assertListEqual(trend['bar'].y, [48, 52, 56])
 
     def test_add(self):
-        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
-        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
         c = a + b
         self.assertListEqual(c.points, [ (1, 4), (2, 4), (3, 4) ])
-        self.assertEquals(c.frequency, 2)
 
     def test_add_update(self):
-        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
-        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
         a += b
         self.assertListEqual(a.points, [ (1, 4), (2, 4), (3, 4) ])
-        self.assertEquals(a.frequency, 2)
 
     def test_sub(self):
-        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
-        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
         c = a - b
         self.assertListEqual(c.points, [ (1, 2), (2, 2), (3, 2) ])
-        self.assertEquals(c.frequency, 2)
 
     def test_sub_update(self):
-        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ], frequency=2)
-        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ], frequency=2)
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
+        b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
         a -= b
         self.assertListEqual(a.points, [ (1, 2), (2, 2), (3, 2) ])
-        self.assertEquals(a.frequency, 2)
-
-    def test_operators_erase_frequency_on_mismatch(self):
-        a = TimeSeries([ ], frequency=2)
-        b = TimeSeries([ ], frequency=1)
-        c = a - b
-        self.assertEquals(c.frequency, None)
 

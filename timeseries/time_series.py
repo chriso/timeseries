@@ -11,13 +11,11 @@ class TimeSeries(Series):
     ETS = 'ets'
     ARIMA = 'arima'
 
-    def __init__(self, points, frequency=None):
+    def __init__(self, points):
         '''Initialise the time series. `points` is expected to be either a list of
         tuples where each tuple represents a point (timestamp, value), or a dict where
-        the keys are timestamps. Timestamps are expected to be in milliseconds.
-        `frequency` is optional and is used for additional analysis.'''
+        the keys are timestamps. Timestamps are expected to be in milliseconds.'''
         Series.__init__(self, points)
-        self.frequency = frequency
 
     @property
     def timestamps(self):
@@ -45,15 +43,15 @@ class TimeSeries(Series):
         series = Series.trend(self, **kwargs)
         return TimeSeries(series.points)
 
-    def forecast(self, horizon, method=ARIMA):
+    def forecast(self, horizon, method=ARIMA, frequency=None):
         '''Forecast points beyond the time series range using the specified
         forecasting method. `horizon` is the number of points to forecast.'''
         if len(self.points) <= 1:
             raise ArithmeticError('Cannot run forecast when len(series) <= 1')
         R = LazyImport.rpy2()
         series = LazyImport.numpy().array(self.y)
-        if self.frequency is not None:
-            series = R.ts(series, frequency=self.frequency)
+        if frequency is not None:
+            series = R.ts(series, frequency=frequency)
         if method == TimeSeries.ARIMA:
             fit = R.forecast.auto_arima(series)
         elif method == TimeSeries.ETS:
@@ -67,20 +65,18 @@ class TimeSeries(Series):
         forecast_x = [ last_x + x * interval for x in xrange(1, horizon+1) ]
         return TimeSeries(zip(forecast_x, forecast_y))
 
-    def decompose(self, window=None, periodic=False):
+    def decompose(self, frequency, window=None, periodic=False):
         '''Use STL to decompose the time series into seasonal, trend, and
         residual components.'''
-        if not self.frequency:
-            raise ValueError('Cannot decompose without a time series frequency')
         R = LazyImport.rpy2()
         if periodic:
             window = 'periodic'
         elif window is None:
-            window = self.frequency
+            window = frequency
         timestamps = self.x
         series = LazyImport.numpy().array(self.y)
         length = len(series)
-        series = R.ts(series, frequency=self.frequency)
+        series = R.ts(series, frequency=frequency)
         kwargs = { 's.window': window }
         decomposed = R.robjects.r['stl'](series, **kwargs).rx2('time.series')
         decomposed = [ row for row in decomposed ]
@@ -101,18 +97,10 @@ class TimeSeries(Series):
         pylab.show()
 
     def __add__(self, operand):
-        series = Series.__add__(self, operand)
-        frequency = None
-        if operand.frequency == self.frequency:
-            frequency = self.frequency
-        return TimeSeries(series.points, frequency=frequency)
+        return TimeSeries(Series.__add__(self, operand))
 
     def __sub__(self, operand):
-        series = Series.__sub__(self, operand)
-        frequency = None
-        if operand.frequency == self.frequency:
-            frequency = self.frequency
-        return TimeSeries(series.points, frequency=frequency)
+        return TimeSeries(Series.__sub__(self, operand))
 
     def _to_datetime(self, time):
         '''Convert `time` to a datetime.'''
