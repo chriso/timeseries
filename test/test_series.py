@@ -22,8 +22,9 @@ class TestSeries(TestCase):
 
     def test_map(self):
         series = Series([ (1, 2), (3, 4), (5, 6) ])
-        series.map(lambda y: y * 2)
-        self.assertListEqual([ (1, 4), (3, 8), (5, 12) ], series.points)
+        double = series.map(lambda y: y * 2)
+        self.assertTrue(isinstance(double, Series))
+        self.assertListEqual([ (1, 4), (3, 8), (5, 12) ], double.points)
 
     def test_trend_of_empty_series(self):
         with self.assertRaises(ArithmeticError):

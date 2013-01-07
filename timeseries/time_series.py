@@ -37,6 +37,10 @@ class TimeSeries(Series):
             return None
         return self.points[1][0] - self.points[0][0]
 
+    def map(self, fn):
+        '''Run a map function across all y points in the series.'''
+        return TimeSeries(Series.map(self, fn).points)
+
     def trend(self, **kwargs):
         '''Override Series.trend() to return a TimeSeries instance.'''
         series = Series.trend(self, **kwargs)

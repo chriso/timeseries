@@ -46,6 +46,12 @@ class TestTimeSeries(TestCase):
         series = TimeSeries(points)
         self.assertListEqual([ s for s in series ], points)
 
+    def test_map_return_type(self):
+        series = TimeSeries([ (1, 2), (3, 4), (5, 6) ])
+        double = series.map(lambda y: y * 2)
+        self.assertTrue(isinstance(double, TimeSeries))
+        self.assertListEqual([ (1, 4), (3, 8), (5, 12) ], double.points)
+
     def test_trend_return_type(self):
         trend = TimeSeries([ (1, 3), (2, 5) ]).trend(order=TimeSeries.LINEAR)
         self.assertTrue(isinstance(trend, TimeSeries))
