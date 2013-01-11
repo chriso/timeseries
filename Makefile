@@ -9,17 +9,16 @@ coverage:
 	@coverage run test.py && \
 		coverage report -m && coverage html
 
-dependencies:
+install:
 	@python setup.py install
 
 dist:
 	@python setup.py sdist \
 		&& mv dist/timeseries*.tar.gz .
 
-docs: documentation
-
-deps: dependencies
+publish:
+	@python setup.py sdist upload
 
 test: check
 
-.PHONY: check clean coverage dependencies dist
+.PHONY: check clean coverage install publish dist
