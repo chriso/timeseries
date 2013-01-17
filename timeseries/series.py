@@ -73,48 +73,73 @@ class Series(object):
         return self
 
     def __add__(self, operand):
+        if not isinstance(operand, Series):
+            return Series([ ( x, y + operand ) for x, y in self.points ])
         lookup = dict(operand.points)
         return Series([ ( x, y + lookup[x] ) for x, y in self.points if x in lookup ])
 
     def __iadd__(self, operand):
-        lookup = dict(operand.points)
-        self.points = [ ( x, y + lookup[x] ) for x, y in self.points if x in lookup ]
+        if not isinstance(operand, Series):
+            self.points = [ ( x, y + operand ) for x, y in self.points ]
+        else:
+            lookup = dict(operand.points)
+            self.points = [ ( x, y + lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
     def __sub__(self, operand):
+        if not isinstance(operand, Series):
+            return Series([ ( x, y - operand ) for x, y in self.points ])
         lookup = dict(operand.points)
         return Series([ ( x, y - lookup[x] ) for x, y in self.points if x in lookup ])
 
     def __isub__(self, operand):
-        lookup = dict(operand.points)
-        self.points = [ ( x, y - lookup[x] ) for x, y in self.points if x in lookup ]
+        if not isinstance(operand, Series):
+            self.points = [ ( x, y - operand ) for x, y in self.points ]
+        else:
+            lookup = dict(operand.points)
+            self.points = [ ( x, y - lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
     def __mul__(self, operand):
+        if not isinstance(operand, Series):
+            return Series([ ( x, y * operand ) for x, y in self.points ])
         lookup = dict(operand.points)
         return Series([ ( x, y * lookup[x] ) for x, y in self.points if x in lookup ])
 
     def __imul__(self, operand):
-        lookup = dict(operand.points)
-        self.points = [ ( x, y * lookup[x] ) for x, y in self.points if x in lookup ]
+        if not isinstance(operand, Series):
+            self.points = [ ( x, y * operand ) for x, y in self.points ]
+        else:
+            lookup = dict(operand.points)
+            self.points = [ ( x, y * lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
     def __div__(self, operand):
+        if not isinstance(operand, Series):
+            return Series([ ( x, float(y) / operand ) for x, y in self.points ])
         lookup = dict(operand.points)
         return Series([ ( x, float(y) / lookup[x] ) for x, y in self.points if x in lookup ])
 
     def __idiv__(self, operand):
-        lookup = dict(operand.points)
-        self.points = [ ( x, float(y) / lookup[x] ) for x, y in self.points if x in lookup ]
+        if not isinstance(operand, Series):
+            self.points = [ ( x, float(y) / operand ) for x, y in self.points ]
+        else:
+            lookup = dict(operand.points)
+            self.points = [ ( x, float(y) / lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
     def __pow__(self, operand):
+        if not isinstance(operand, Series):
+            return Series([ ( x, y ** operand ) for x, y in self.points ])
         lookup = dict(operand.points)
         return Series([ ( x, y ** lookup[x] ) for x, y in self.points if x in lookup ])
 
     def __ipow__(self, operand):
-        lookup = dict(operand.points)
-        self.points = [ ( x, y ** lookup[x] ) for x, y in self.points if x in lookup ]
+        if not isinstance(operand, Series):
+            self.points = [ ( x, y ** operand ) for x, y in self.points ]
+        else:
+            lookup = dict(operand.points)
+            self.points = [ ( x, y ** lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
     def __getitem__(self, x):

@@ -156,12 +156,17 @@ class TestTimeSeries(TestCase):
         c = a + b
         self.assertTrue(isinstance(c, TimeSeries))
         self.assertListEqual(c.points, [ (1, 4), (2, 4), (3, 4) ])
+        c = c + 5
+        self.assertTrue(isinstance(c, TimeSeries))
+        self.assertListEqual(c.points, [ (1, 9), (2, 9), (3, 9) ])
 
     def test_add_update(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
         b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
         a += b
         self.assertListEqual(a.points, [ (1, 4), (2, 4), (3, 4) ])
+        a += 5
+        self.assertListEqual(a.points, [ (1, 9), (2, 9), (3, 9) ])
 
     def test_sub(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
@@ -169,12 +174,17 @@ class TestTimeSeries(TestCase):
         c = a - b
         self.assertTrue(isinstance(c, TimeSeries))
         self.assertListEqual(c.points, [ (1, 2), (2, 2), (3, 2) ])
+        c = c - 1
+        self.assertTrue(isinstance(c, TimeSeries))
+        self.assertListEqual(c.points, [ (1, 1), (2, 1), (3, 1) ])
 
     def test_sub_update(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
         b = TimeSeries([ (0, 1), (1, 1), (2, 1), (3, 1), (4, 1) ])
         a -= b
         self.assertListEqual(a.points, [ (1, 2), (2, 2), (3, 2) ])
+        a -= 1
+        self.assertListEqual(a.points, [ (1, 1), (2, 1), (3, 1) ])
 
     def test_mul(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
@@ -182,12 +192,17 @@ class TestTimeSeries(TestCase):
         c = a * b
         self.assertTrue(isinstance(c, TimeSeries))
         self.assertListEqual(c.points, [ (1, 9), (2, 6), (3, 6) ])
+        c = c * 2
+        self.assertTrue(isinstance(c, TimeSeries))
+        self.assertListEqual(c.points, [ (1, 18), (2, 12), (3, 12) ])
 
     def test_mul_update(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
         b = TimeSeries([ (0, 2), (1, 3), (2, 2), (3, 2), (4, 1) ])
         a *= b
         self.assertListEqual(a.points, [ (1, 9), (2, 6), (3, 6) ])
+        a *= 2
+        self.assertListEqual(a.points, [ (1, 18), (2, 12), (3, 12) ])
 
     def test_div(self):
         a = TimeSeries([ (1, 3), (2, 4), (3, 3) ])
@@ -195,12 +210,17 @@ class TestTimeSeries(TestCase):
         c = a / b
         self.assertTrue(isinstance(c, TimeSeries))
         self.assertListEqual(c.points, [ (1, 1), (2, 2), (3, 1.5) ])
+        c = c / 2
+        self.assertTrue(isinstance(c, TimeSeries))
+        self.assertListEqual(c.points, [ (1, 0.5), (2, 1), (3, 0.75) ])
 
     def test_div_update(self):
         a = TimeSeries([ (1, 3), (2, 4), (3, 3) ])
         b = TimeSeries([ (0, 2), (1, 3), (2, 2), (3, 2), (4, 1) ])
         a /= b
         self.assertListEqual(a.points, [ (1, 1), (2, 2), (3, 1.5) ])
+        a /= 0.5
+        self.assertListEqual(a.points, [ (1, 2), (2, 4), (3, 3) ])
 
     def test_pow(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
@@ -208,10 +228,15 @@ class TestTimeSeries(TestCase):
         c = a ** b
         self.assertTrue(isinstance(c, TimeSeries))
         self.assertListEqual(c.points, [ (1, 27), (2, 9), (3, 3) ])
+        c = c ** 2
+        self.assertTrue(isinstance(c, TimeSeries))
+        self.assertListEqual(c.points, [ (1, 729), (2, 81), (3, 9) ])
 
     def test_pow_update(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
         b = TimeSeries([ (0, 2), (1, 3), (2, 2), (3, 1), (4, 1) ])
         a **= b
         self.assertListEqual(a.points, [ (1, 27), (2, 9), (3, 3) ])
+        a **= 2
+        self.assertListEqual(a.points, [ (1, 729), (2, 81), (3, 9) ])
 
