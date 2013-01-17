@@ -90,6 +90,33 @@ class Series(object):
         self.points = [ ( x, y - lookup[x] ) for x, y in self.points if x in lookup ]
         return self
 
+    def __mul__(self, operand):
+        lookup = dict(operand.points)
+        return Series([ ( x, y * lookup[x] ) for x, y in self.points if x in lookup ])
+
+    def __imul__(self, operand):
+        lookup = dict(operand.points)
+        self.points = [ ( x, y * lookup[x] ) for x, y in self.points if x in lookup ]
+        return self
+
+    def __div__(self, operand):
+        lookup = dict(operand.points)
+        return Series([ ( x, float(y) / lookup[x] ) for x, y in self.points if x in lookup ])
+
+    def __idiv__(self, operand):
+        lookup = dict(operand.points)
+        self.points = [ ( x, float(y) / lookup[x] ) for x, y in self.points if x in lookup ]
+        return self
+
+    def __pow__(self, operand):
+        lookup = dict(operand.points)
+        return Series([ ( x, y ** lookup[x] ) for x, y in self.points if x in lookup ])
+
+    def __ipow__(self, operand):
+        lookup = dict(operand.points)
+        self.points = [ ( x, y ** lookup[x] ) for x, y in self.points if x in lookup ]
+        return self
+
     def __getitem__(self, x):
         return dict(self.points)[x]
 

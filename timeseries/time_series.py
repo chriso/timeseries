@@ -105,6 +105,15 @@ class TimeSeries(Series):
     def __sub__(self, operand):
         return TimeSeries(Series.__sub__(self, operand))
 
+    def __mul__(self, operand):
+        return TimeSeries(Series.__mul__(self, operand))
+
+    def __div__(self, operand):
+        return TimeSeries(Series.__div__(self, operand))
+
+    def __pow__(self, operand):
+        return TimeSeries(Series.__pow__(self, operand))
+
     def __str__(self):
         data = {}
         data['Date'] = map(lambda date: date.isoformat(' '), self.dates)

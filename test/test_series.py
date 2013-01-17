@@ -78,6 +78,42 @@ class TestSeries(TestCase):
         a -= b
         self.assertListEqual(a.points, [ (1, 2), (2, 2), (3, 2) ])
 
+    def test_mul(self):
+        a = Series([ (1, 3), (2, 3), (3, 3) ])
+        b = Series([ (0, 2), (1, 3), (2, 2), (3, 2), (4, 1) ])
+        c = a * b
+        self.assertListEqual(c.points, [ (1, 9), (2, 6), (3, 6) ])
+
+    def test_mul_update(self):
+        a = Series([ (1, 3), (2, 3), (3, 3) ])
+        b = Series([ (0, 2), (1, 3), (2, 2), (3, 2), (4, 1) ])
+        a *= b
+        self.assertListEqual(a.points, [ (1, 9), (2, 6), (3, 6) ])
+
+    def test_div(self):
+        a = Series([ (1, 3), (2, 4), (3, 3) ])
+        b = Series([ (0, 2), (1, 3), (2, 2), (3, 2), (4, 1) ])
+        c = a / b
+        self.assertListEqual(c.points, [ (1, 1), (2, 2), (3, 1.5) ])
+
+    def test_div_update(self):
+        a = Series([ (1, 3), (2, 4), (3, 3) ])
+        b = Series([ (0, 2), (1, 3), (2, 2), (3, 2), (4, 1) ])
+        a /= b
+        self.assertListEqual(a.points, [ (1, 1), (2, 2), (3, 1.5) ])
+
+    def test_pow(self):
+        a = Series([ (1, 3), (2, 3), (3, 3) ])
+        b = Series([ (0, 2), (1, 3), (2, 2), (3, 1), (4, 1) ])
+        c = a ** b
+        self.assertListEqual(c.points, [ (1, 27), (2, 9), (3, 3) ])
+
+    def test_pow_update(self):
+        a = Series([ (1, 3), (2, 3), (3, 3) ])
+        b = Series([ (0, 2), (1, 3), (2, 2), (3, 1), (4, 1) ])
+        a **= b
+        self.assertListEqual(a.points, [ (1, 27), (2, 9), (3, 3) ])
+
     def test_simple_moving_average(self):
         points = [1, 2, 3, 4, 5, 6]
         series = Series(zip(points, points))
