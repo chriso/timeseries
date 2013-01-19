@@ -8,7 +8,10 @@ def table_output(data):
     headings = [ item[0] for item in data ]
     rows = [ item[1] for item in data ]
     columns = zip(*rows)
-    widths = [ max(map(lambda y: len(str(y)), row)) for row in rows ]
+    if len(columns):
+        widths = [ max(map(lambda y: len(str(y)), row)) for row in rows ]
+    else:
+        widths = [ 0 for c in headings ]
     for c, heading in enumerate(headings):
         widths[c] = max(widths[c], len(heading))
     column_count = range(len(rows))
