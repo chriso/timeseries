@@ -114,7 +114,15 @@ class TimeSeries(Series):
     def __pow__(self, operand):
         return TimeSeries(Series.__pow__(self, operand))
 
-    def __str__(self):
+    def __abs__(self):
+        '''Apply abs() to all series values'''
+        return TimeSeries(Series.__abs__(self))
+
+    def __round__(self, n):
+        '''Apply round() to all series values'''
+        return TimeSeries(Series.__round__(self, n))
+
+    def __str__(self): # pragma: no cover
         data = {}
         data['Date'] = map(lambda date: date.isoformat(' '), self.dates)
         data['Value'] = self.values
@@ -185,12 +193,14 @@ class TimeSeriesGroup(MutableMapping):
         return self
 
     def __abs__(self):
-        for series in self.groups.itervalues():
-            abs(series)
+        for key, series in self.groups.iteritems():
+            self.groups[key] = abs(series)
+        return self
 
     def __round__(self, n):
-        for series in self.groups.itervalues():
-            series.round()
+        for key, series in self.groups.iteritems():
+            self.groups[key] = series.round()
+        return self
 
     def __getitem__(self, key):
         return self.groups[key]
@@ -210,7 +220,7 @@ class TimeSeriesGroup(MutableMapping):
     def __len__(self):
         return len(self.groups)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         data = []
         timestamps = self.timestamps
         dates = map(lambda date: to_datetime(date).isoformat(' '), timestamps)

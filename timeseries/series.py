@@ -62,15 +62,14 @@ class Series(object):
         return LazyImport.numpy().polyfit(self.x, self.y, order)
 
     def __abs__(self):
-        self.points = [ (x, abs(y)) for x, y in self.points ]
+        return Series([ (x, abs(y)) for x, y in self.points ])
 
     def __round__(self, n):
-        self.points = [ (x, round(y, n)) for x, y in self.points ]
+        return Series([ (x, round(y, n)) for x, y in self.points ])
 
     def round(self):
         # Manual delegation for v2.x
-        self.__round__(0)
-        return self
+        return self.__round__(0)
 
     def __add__(self, operand):
         if not isinstance(operand, Series):
@@ -151,7 +150,7 @@ class Series(object):
     def __len__(self):
         return len(self.points)
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return table_output([ ('X', self.x), ('Y', self.y) ])
 
     def __repr__(self):

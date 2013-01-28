@@ -114,6 +114,11 @@ class TestSeries(TestCase):
         a **= b
         self.assertListEqual(a.points, [ (1, 27), (2, 9), (3, 3) ])
 
+    def test_abs(self):
+        a = Series([ (1, -3), (2, 3), (3, -3.3) ])
+        a = abs(a)
+        self.assertListEqual(a.y, [ 3, 3, 3.3 ])
+
     def test_simple_moving_average(self):
         points = [1, 2, 3, 4, 5, 6]
         series = Series(zip(points, points))

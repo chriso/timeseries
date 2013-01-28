@@ -232,6 +232,12 @@ class TestTimeSeries(TestCase):
         self.assertTrue(isinstance(c, TimeSeries))
         self.assertListEqual(c.points, [ (1, 729), (2, 81), (3, 9) ])
 
+    def test_abs(self):
+        a = TimeSeries([ (1, -3), (2, 3.3), (3, -5) ])
+        a = abs(a)
+        self.assertTrue(isinstance(a, TimeSeries))
+        self.assertListEqual(a.values, [ 3, 3.3, 5 ])
+
     def test_pow_update(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
         b = TimeSeries([ (0, 2), (1, 3), (2, 2), (3, 1), (4, 1) ])
@@ -239,4 +245,17 @@ class TestTimeSeries(TestCase):
         self.assertListEqual(a.points, [ (1, 27), (2, 9), (3, 3) ])
         a **= 2
         self.assertListEqual(a.points, [ (1, 729), (2, 81), (3, 9) ])
+
+    def test_group_timestamps(self):
+        a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
+        b = TimeSeries([ (0, 2), (1, 3), (2, 2), (3, 1), (4, 1) ])
+        c = TimeSeries([ (5, 1), (6, 1) ])
+        group = TimeSeriesGroup(a=a, b=b, c=c)
+        self.assertListEqual(group.timestamps, [ 0, 1, 2, 3, 4, 5, 6 ])
+
+    def test_group_abs(self):
+        a = TimeSeries([ (1, -1), (2, -3), (3, 3.3) ])
+        group = TimeSeriesGroup(a=a)
+        group = abs(group)
+        self.assertListEqual(group['a'].values, [ 1, 3, 3.3 ])
 
