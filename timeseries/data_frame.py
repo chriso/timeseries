@@ -1,6 +1,5 @@
 from collections import MutableMapping
 from .lazy_import import LazyImport
-from .series import Series
 from .utilities import table_output, to_datetime
 
 class DataFrame(MutableMapping):
@@ -59,9 +58,9 @@ class DataFrame(MutableMapping):
                 self.groups[new] = self.groups[old]
                 del self.groups[old]
 
-    def round(self):
+    def round(self, n=0):
         # Manual delegation for v2.x
-        self.__round__(0)
+        self.__round__(n)
         return self
 
     def __abs__(self):
@@ -69,9 +68,9 @@ class DataFrame(MutableMapping):
             self.groups[key] = abs(series)
         return self
 
-    def __round__(self, n):
+    def __round__(self, n=0):
         for key, series in self.groups.iteritems():
-            self.groups[key] = series.round()
+            self.groups[key] = series.round(n)
         return self
 
     def __getitem__(self, key):

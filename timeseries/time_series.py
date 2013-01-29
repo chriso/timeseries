@@ -1,4 +1,3 @@
-from collections import MutableMapping
 from .lazy_import import LazyImport
 from .series import Series
 from .utilities import table_output, to_datetime
@@ -119,7 +118,7 @@ class TimeSeries(Series):
         '''Apply abs() to all series values'''
         return TimeSeries(Series.__abs__(self))
 
-    def __round__(self, n):
+    def __round__(self, n=0):
         '''Apply round() to all series values'''
         return TimeSeries(Series.__round__(self, n))
 

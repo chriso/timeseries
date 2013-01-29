@@ -1,4 +1,4 @@
-from types import DictType, FloatType
+from types import DictType
 from .lazy_import import LazyImport
 from .utilities import table_output
 
@@ -36,7 +36,7 @@ class Series(object):
         '''Run a map function across all y points in the series.'''
         return Series([ (x, fn(y)) for x, y in self.points ])
 
-    def trend(self, order=LINEAR, positive=True):
+    def trend(self, order=LINEAR):
         '''Calculate a trend of the specified order and return as
         a new series.'''
         coefficients = self.trend_coefficients(order)
@@ -64,12 +64,12 @@ class Series(object):
     def __abs__(self):
         return Series([ (x, abs(y)) for x, y in self.points ])
 
-    def __round__(self, n):
+    def __round__(self, n=0):
         return Series([ (x, round(y, n)) for x, y in self.points ])
 
-    def round(self):
+    def round(self, n=0):
         # Manual delegation for v2.x
-        return self.__round__(0)
+        return self.__round__(n)
 
     def __add__(self, operand):
         if not isinstance(operand, Series):
