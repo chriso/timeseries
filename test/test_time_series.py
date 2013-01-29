@@ -1,5 +1,5 @@
 from unittest import TestCase
-from timeseries import TimeSeries, TimeSeriesGroup
+from timeseries import TimeSeries, DataFrame
 from datetime import datetime
 
 class TestTimeSeries(TestCase):
@@ -97,7 +97,7 @@ class TestTimeSeries(TestCase):
     def test_decomposition(self):
         series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ])
         decomposed = series.decompose(2).round()
-        self.assertTrue(isinstance(decomposed, TimeSeriesGroup))
+        self.assertTrue(isinstance(decomposed, DataFrame))
         self.assertEquals(len(decomposed), 3)
         for series in decomposed.itervalues():
             self.assertListEqual(series.timestamps, [1, 2, 3, 4, 5])
@@ -108,7 +108,7 @@ class TestTimeSeries(TestCase):
     def test_periodic_decomposition(self):
         series = TimeSeries([ (1, 100), (2, 200), (3, 100), (4, 200), (5, 100) ])
         decomposed = series.decompose(2, periodic=True).round()
-        self.assertTrue(isinstance(decomposed, TimeSeriesGroup))
+        self.assertTrue(isinstance(decomposed, DataFrame))
         self.assertEquals(len(decomposed), 3)
         for series in decomposed.itervalues():
             self.assertListEqual(series.timestamps, [1, 2, 3, 4, 5])
@@ -119,7 +119,7 @@ class TestTimeSeries(TestCase):
     def test_group_accessors(self):
         foo = TimeSeries({ 1: 2, 3: 4 })
         bar = TimeSeries({ 5: 6, 7: 8 })
-        group = TimeSeriesGroup(foo=foo, bar=bar)
+        group = DataFrame(foo=foo, bar=bar)
         self.assertIs(foo, group['foo'])
         self.assertIs(bar, group['bar'])
         self.assertIs(foo, group.foo)
@@ -135,7 +135,7 @@ class TestTimeSeries(TestCase):
     def test_group_rename(self):
         foo = TimeSeries({ 1: 2, 3: 4 })
         bar = TimeSeries({ 5: 6, 7: 8 })
-        group = TimeSeriesGroup(foo=foo, bar=bar)
+        group = DataFrame(foo=foo, bar=bar)
         group.rename(foo='Foo Bar')
         self.assertFalse('foo' in group)
         self.assertTrue('Foo Bar' in group)
@@ -143,7 +143,7 @@ class TestTimeSeries(TestCase):
     def test_linear_trend(self):
         foo = TimeSeries([ (1, 32), (2, 55), (3, 40) ])
         bar = TimeSeries([ (4, 42), (5, 65), (6, 50) ])
-        group = TimeSeriesGroup(foo=foo, bar=bar)
+        group = DataFrame(foo=foo, bar=bar)
         trend = group.trend().round()
         self.assertListEqual(trend['foo'].x, [1, 2, 3])
         self.assertListEqual(trend['foo'].y, [38, 42, 46])
@@ -250,12 +250,12 @@ class TestTimeSeries(TestCase):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
         b = TimeSeries([ (0, 2), (1, 3), (2, 2), (3, 1), (4, 1) ])
         c = TimeSeries([ (5, 1), (6, 1) ])
-        group = TimeSeriesGroup(a=a, b=b, c=c)
+        group = DataFrame(a=a, b=b, c=c)
         self.assertListEqual(group.timestamps, [ 0, 1, 2, 3, 4, 5, 6 ])
 
     def test_group_abs(self):
         a = TimeSeries([ (1, -1), (2, -3), (3, 3.3) ])
-        group = TimeSeriesGroup(a=a)
+        group = DataFrame(a=a)
         group = abs(group)
         self.assertListEqual(group['a'].values, [ 1, 3, 3.3 ])
 
