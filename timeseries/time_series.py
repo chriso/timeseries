@@ -24,7 +24,7 @@ class TimeSeries(Series):
     @property
     def dates(self):
         '''Get all dates from the time series as `datetime` instances.'''
-        return map(to_datetime, self.x)
+        return [ to_datetime(x) for x in self.x ]
 
     @property
     def values(self):
@@ -124,7 +124,7 @@ class TimeSeries(Series):
 
     def __str__(self): # pragma: no cover
         data = {}
-        data['Date'] = map(lambda date: date.isoformat(' '), self.dates)
+        data['Date'] = [ date.isoformat(' ') for date in self.dates ]
         data['Value'] = self.values
         return table_output(data)
 

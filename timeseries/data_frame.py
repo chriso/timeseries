@@ -94,7 +94,7 @@ class DataFrame(MutableMapping):
     def __str__(self): # pragma: no cover
         data = []
         timestamps = self.timestamps
-        dates = map(lambda date: to_datetime(date).isoformat(' '), timestamps)
+        dates = [ to_datetime(date).isoformat(' ') for date in timestamps ]
         data = [ ( 'Date', dates ) ]
         for key, series in self.groups.iteritems():
             row = []

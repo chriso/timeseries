@@ -9,7 +9,7 @@ def table_output(data):
     rows = [ item[1] for item in data ]
     columns = zip(*rows)
     if len(columns):
-        widths = [ max(map(lambda y: len(str(y)), row)) for row in rows ]
+        widths = [ max([ len(str(y)) for y in row ]) for row in rows ]
     else:
         widths = [ 0 for c in headings ]
     for c, heading in enumerate(headings):
