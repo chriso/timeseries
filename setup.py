@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "timeseries",
-    version = "0.4.0",
+    version = "0.5.0",
     author = "Chris O'Hara",
     author_email = "cohara87@gmail.com",
     description = "Time series modelling and analysis",
