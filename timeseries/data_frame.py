@@ -46,7 +46,7 @@ class DataFrame(MutableMapping):
                 name = labels[name]
             if name is not None:
                 kwargs['label'] = name
-            pylab.plot(series.dates, series.y, '%s-' % colour, **kwargs)
+            pylab.plot(series.dates, series.values, '%s-' % colour, **kwargs)
             if name is not None:
                 pylab.legend()
         pylab.show()
