@@ -6,14 +6,14 @@ class TestTimeSeries(TestCase):
 
     def test_tuple_list_init(self):
         series = TimeSeries([ (1, 2), (3, 4), (5, 6) ])
-        self.assertListEqual(series.x, [1, 3, 5])
-        self.assertListEqual(series.y, [2, 4, 6])
+        self.assertListEqual(series.timestamps, [1, 3, 5])
+        self.assertListEqual(series.values, [2, 4, 6])
         self.assertEquals(len(series), 3)
 
     def test_dict_init(self):
         series = TimeSeries({ 1: 2, 3: 4, 5: 6 })
-        self.assertListEqual(series.x, [1, 3, 5])
-        self.assertListEqual(series.y, [2, 4, 6])
+        self.assertListEqual(series.timestamps, [1, 3, 5])
+        self.assertListEqual(series.values, [2, 4, 6])
         self.assertEquals(len(series), 3)
 
     def test_accessors(self):
@@ -40,6 +40,52 @@ class TestTimeSeries(TestCase):
         self.assertEquals(series.interval, None)
         series = TimeSeries([ (1, 2), (3, 4) ])
         self.assertEquals(series.interval, 2)
+
+    def test_map(self):
+        series = TimeSeries([ (1, 2), (3, 4), (5, 6) ])
+        double = series.map(lambda y: y * 2)
+        self.assertTrue(isinstance(double, TimeSeries))
+        self.assertListEqual([ (1, 4), (3, 8), (5, 12) ], double.points)
+
+    def test_linear_trend(self):
+        series = TimeSeries([ (1, 32), (2, 55), (3, 40) ])
+        trend = series.trend(order=TimeSeries.LINEAR).round()
+        self.assertListEqual(trend.timestamps, [1, 2, 3])
+        self.assertListEqual(trend.values, [38, 42, 46])
+
+    def test_quadratic_trend(self):
+        series = TimeSeries([ (1, 32), (2, 55), (3, 40), (4, 100) ])
+        trend = series.trend(order=TimeSeries.QUADRATIC).round()
+        self.assertListEqual(trend.timestamps, [1, 2, 3, 4])
+        self.assertListEqual(trend.values, [38, 38, 57, 94])
+
+    def test_invalid_trend(self):
+        series = TimeSeries([])
+        with self.assertRaises(ArithmeticError):
+            series.trend()
+
+    def test_indexing(self):
+        series = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
+        self.assertEquals(series[1], 3)
+        self.assertEquals(series[2], 3)
+        with self.assertRaises(KeyError):
+            foo = series[4]
+
+    def test_simple_moving_average(self):
+        points = [1, 2, 3, 4, 5, 6]
+        series = TimeSeries(zip(points, points))
+        ma = series.moving_average(3).round()
+        self.assertListEqual(ma.points, [ (3, 2), (4, 3), (5, 4), (6, 5) ])
+        ma = series.moving_average(5).round()
+        self.assertListEqual(ma.points, [ (5, 3), (6, 4) ])
+
+    def test_invalid_moving_average(self):
+        series = TimeSeries([])
+        with self.assertRaises(ArithmeticError):
+            series.moving_average(3)
+        series = TimeSeries([ (1, 1), (2, 2) ])
+        with self.assertRaises(ArithmeticError):
+            series.moving_average(3)
 
     def test_iteration(self):
         points = [ (1, 2), (3, 4), (5, 6) ]
@@ -145,10 +191,10 @@ class TestTimeSeries(TestCase):
         bar = TimeSeries([ (4, 42), (5, 65), (6, 50) ])
         group = DataFrame(foo=foo, bar=bar)
         trend = group.trend().round()
-        self.assertListEqual(trend['foo'].x, [1, 2, 3])
-        self.assertListEqual(trend['foo'].y, [38, 42, 46])
-        self.assertListEqual(trend['bar'].x, [4, 5, 6])
-        self.assertListEqual(trend['bar'].y, [48, 52, 56])
+        self.assertListEqual(trend['foo'].timestamps, [1, 2, 3])
+        self.assertListEqual(trend['foo'].values, [38, 42, 46])
+        self.assertListEqual(trend['bar'].timestamps, [4, 5, 6])
+        self.assertListEqual(trend['bar'].values, [48, 52, 56])
 
     def test_add(self):
         a = TimeSeries([ (1, 3), (2, 3), (3, 3) ])
