@@ -1,3 +1,5 @@
+# timeseries
+
 A collection of utilities for time series modelling and analysis
 
 - Trends
@@ -6,15 +8,15 @@ A collection of utilities for time series modelling and analysis
 - Forecasting (ETS / ARIMA)
 - Plotting (matplotlib)
 
-See the [wiki](https://github.com/chriso/timeseries/wiki/Time-Series) for more information.
+See the [wiki][wiki] for more information.
 
-### Installation
+## Installation
 
 ```bash
 $ pip install timeseries
 ```
 
-### Tests
+## Tests
 
 Run the test suite with
 
@@ -22,7 +24,10 @@ Run the test suite with
 $ make check
 ```
 
-### License
+## License
 
 MIT
+
+
+[wiki]: https://bitbucket.org/chris6f/timeseries/wiki/Documentation
 
