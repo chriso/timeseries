@@ -29,5 +29,4 @@ $ make check
 MIT
 
 
-[wiki]: https://bitbucket.org/chris6f/timeseries/wiki/Documentation
-
+[wiki]: https://github.com/chriso/timeseries/wiki/Documentation
